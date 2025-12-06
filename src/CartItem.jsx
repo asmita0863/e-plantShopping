@@ -29,7 +29,7 @@ const CartItem = ({ onContinueShopping }) => {
   const handleIncrement = (item) => {
     dispatch(
       updateQuantity({
-        id: item.id,
+        name: item.name,
         quantity: item.quantity + 1,
       })
     );
@@ -39,7 +39,7 @@ const CartItem = ({ onContinueShopping }) => {
     if (item.quantity > 1) {
       dispatch(
         updateQuantity({
-          id: item.id,
+          name: item.name,
           quantity: item.quantity - 1,
         })
       );
@@ -47,11 +47,12 @@ const CartItem = ({ onContinueShopping }) => {
   };
 
   const handleRemove = (item) => {
-    dispatch(removeItem(item.id));
+    dispatch(removeItem(item.name));
   };
 
   const handleAdd = (item) => {
-    dispatch(addItem(item.id));
+    // addItem expects a product object
+    dispatch(addItem({ name: item.name, image: item.image, cost: item.cost }));
   };
 
   // Calculate total cost based on quantity for an item
@@ -60,9 +61,12 @@ const CartItem = ({ onContinueShopping }) => {
     return (unitPrice * (item.quantity || 0)).toFixed(2);
   };
 
+  const calculateTotalQuantity = () => cart.reduce((sum, it) => sum + (it.quantity || 0), 0);
+
   return (
     <div className="cart-container">
-      <h2 style={{ color: 'black' }}>Total Cart Amount: ${calculateTotalAmount()}</h2>
+      <h2 style={{ color: 'black' }}>Total Plants: {calculateTotalQuantity()}</h2>
+      <h3 style={{ color: 'black' }}>Total Cart Amount: ${calculateTotalAmount()}</h3>
       <div>
         {cart.map(item => (
           <div className="cart-item" key={item.id || item.name}>
@@ -85,7 +89,7 @@ const CartItem = ({ onContinueShopping }) => {
       <div className="continue_shopping_btn">
         <button className="get-started-button" onClick={(e) => handleContinueShopping(e)}>Continue Shopping</button>
         <br />
-        <button className="get-started-button1" onClick={handleCheckoutShopping}>Checkout</button>
+        <button className="get-started-button1" onClick={() => alert('Coming Soon')}>Checkout</button>
       </div>
     </div>
   );
